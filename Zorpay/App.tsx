@@ -4,34 +4,27 @@ import {persistor, store} from './src/stores';
 import {Provider} from 'react-redux';
 import Root from './src';
 import {ActivityIndicator} from 'react-native';
-import {PrivyProvider} from '@privy-io/react-auth';
+import {MAGIC_API_KEY} from './src/lib/constants';
+import {Magic} from '@magic-sdk/react-native-bare';
+import {OAuthExtension} from '@magic-ext/react-native-bare-oauth';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 function App(): React.JSX.Element {
+  const magic = new Magic(MAGIC_API_KEY, {
+    extensions: [new OAuthExtension()],
+  });
+
   return (
-    <Provider store={store}>
-      <PersistGate
-        loading={<ActivityIndicator size={'large'} />}
-        persistor={persistor}>
-        <PrivyProvider
-          appId="clwusfl1x034jyctyn5s18gce"
-          config={{
-            /* Replace this with your desired login methods */
-            loginMethods: ['email', 'wallet'],
-            /* Replace this with your desired appearance configuration */
-            appearance: {
-              theme: 'light',
-              accentColor: '#676FFF',
-              logo: 'your-logo-url',
-            },
-            embeddedWallets: {
-              createOnLogin: 'users-without-wallets',
-              noPromptOnSignature: true,
-            },
-          }}>
-          <Root />
-        </PrivyProvider>
-      </PersistGate>
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <PersistGate
+          loading={<ActivityIndicator size={'large'} />}
+          persistor={persistor}>
+          <magic.Relayer />
+          <Root magic={magic} />
+        </PersistGate>
+      </Provider>
+    </SafeAreaProvider>
   );
 }
 

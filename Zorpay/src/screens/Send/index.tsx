@@ -66,7 +66,7 @@ const Send = ({navigation}) => {
   };
 
   const onSuccess = e => {
-    setAddress(e.data);
+    setAddress(e.data.slice(-42));
     setIsScannerOpen(false);
   };
 

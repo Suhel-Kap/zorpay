@@ -4,7 +4,7 @@ import {styles} from './styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useAccount, useDisconnect} from 'wagmi';
 import {useAppDispatch} from '../../hooks/storeHooks';
-import {setLoggedIn} from '../../stores/user.reducer';
+import {setIsMagic, setLoggedIn} from '../../stores/user.reducer';
 import {COLORS, magic} from '../../lib/constants';
 import {ToastAndroid} from 'react-native';
 
@@ -26,6 +26,7 @@ const Header = ({name}: {name: string}) => {
         dispatch(setLoggedIn(false));
       }
     }
+    dispatch(setIsMagic(false));
   };
 
   return (

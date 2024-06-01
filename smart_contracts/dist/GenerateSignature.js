@@ -1,11 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const ethers_1 = require("ethers");
 const signatureUtils_1 = require("./signatureUtils");
-const fs_1 = __importDefault(require("fs"));
 // takes args passed from console
 const args = process.argv.slice(2);
 const nonce = parseInt(args[0]);
@@ -35,7 +31,6 @@ const result = (0, signatureUtils_1.generateSignature)(nonce, to, value, data, d
 // rpcUrl
 );
 result.then((signature) => {
-    fs_1.default.writeFileSync("signature.txt", signature);
     console.log(signature);
 });
 //# sourceMappingURL=GenerateSignature.js.map

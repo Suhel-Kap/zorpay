@@ -2,7 +2,7 @@ import { glob } from "glob";
 import path from "path";
 import { runTypeChain } from "typechain";
 
-const TYPES_DIR = "./utils/types";
+const TYPES_DIR = "../Zorpay/src/utils/types";
 
 async function main() {
   const cwd = process.cwd();

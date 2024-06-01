@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const CONTRACT_ADDRESS_DIR = "./utils/";
+const CONTRACT_ADDRESS_DIR = "../Zorpay/src/utils/contractAddresses";
 
 function ensureDirectoryExistence(filePath: string) {
   var dirname = path.dirname(filePath);

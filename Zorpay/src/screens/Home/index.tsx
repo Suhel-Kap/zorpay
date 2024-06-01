@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -14,10 +14,58 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {COLORS} from '../../lib/constants';
 import {styles} from './styles';
+import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
+import {
+  getChainId,
+  getEoaAddress,
+  setSmartAccount,
+  getSmartAccountAddress as getSmartAccount,
+  fetchUsdcBalance,
+  getUsdcBalance,
+} from '../../stores/user.reducer';
+import {
+  checkIfAccountExists,
+  getSmartAccountAddress,
+} from '../../utils/read.contract';
+import {createSmartAccount} from '../../utils/write.contract';
 
 const {height} = Dimensions.get('window');
 
 const Home = ({navigation}) => {
+  const eoaAddress = useAppSelector(getEoaAddress);
+  const smartAccountAddress = useAppSelector(getSmartAccount);
+  const usdcBalance = useAppSelector(getUsdcBalance);
+  const chainId = useAppSelector(getChainId);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log('eoaAddress', chainId, eoaAddress);
+    checkIfAccountExists(eoaAddress, chainId).then(res => {
+      if (res === false) {
+        createSmartAccount(eoaAddress, chainId).then(res => {
+          getSmartAccountAddress(eoaAddress, chainId).then(res => {
+            dispatch(setSmartAccount(res));
+          });
+        });
+      } else {
+        getSmartAccountAddress(eoaAddress, chainId).then(res => {
+          dispatch(setSmartAccount(res));
+        });
+      }
+      // dispatch(fetchUsdcBalance());
+    });
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(function () {
+      if (smartAccountAddress) dispatch(fetchUsdcBalance());
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   const panY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -64,7 +112,7 @@ const Home = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
         <Text style={styles.yourBalanceText}>Your Balance</Text>
-        <Text style={styles.balance}>$100.00</Text>
+        <Text style={styles.balance}>${usdcBalance}</Text>
         <View style={styles.items}>
           <View>
             <TouchableOpacity

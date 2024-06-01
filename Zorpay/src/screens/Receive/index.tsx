@@ -4,7 +4,7 @@ import {SvgXml} from 'react-native-svg';
 import qrcode from '../../lib/qrcode';
 import {useAccount} from 'wagmi';
 import {useAppSelector} from '../../hooks/storeHooks';
-import {getIsMagic} from '../../stores/user.reducer';
+import {getIsMagic, getSmartAccountAddress} from '../../stores/user.reducer';
 import {COLORS, magic} from '../../lib/constants';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Feather from 'react-native-vector-icons/Feather';
@@ -14,21 +14,13 @@ import {TouchableOpacity} from 'react-native';
 
 const Receive = () => {
   const [qrSvg, setQrSvg] = useState('');
-  const [address, setAddress] = useState('');
 
-  const {address: eoaAddress} = useAccount();
-  const isMagic = useAppSelector(getIsMagic);
+  const address = useAppSelector(getSmartAccountAddress);
+  console.log('address', address);
 
   const determineUserAddress = async () => {
-    let _address = '';
-    if (isMagic) {
-      _address = (await magic.user.getInfo()).publicAddress as string;
-    } else {
-      _address = eoaAddress as string;
-    }
-    setAddress(_address);
     const qr = qrcode(0, 'L');
-    qr.addData(_address as string);
+    qr.addData(address as string);
     qr.make();
     setQrSvg(qr.createSvgTag({scalable: true}));
   };

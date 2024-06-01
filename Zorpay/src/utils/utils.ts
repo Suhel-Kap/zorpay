@@ -1,4 +1,4 @@
-import { ethers, BigNumberish } from "ethers";
+import {ethers, BigNumberish} from 'ethers';
 import {
   MyUSD,
   SmartAccount,
@@ -6,7 +6,7 @@ import {
   MyUSD__factory,
   SmartAccountFactory__factory,
   SmartAccount__factory,
-} from "./types";
+} from './types';
 
 export type Transaction = {
   nonce: number | string;
@@ -25,25 +25,25 @@ const generateRandomNonce = () => {
 const generateMsgData = (
   transaction: Transaction,
   chainId: number,
-  verifyingContract: string
+  verifyingContract: string,
 ) => {
   const domain = {
-    name: "Zorpay",
-    version: "1",
+    name: 'Zorpay',
+    version: '1',
     chainId: chainId,
     verifyingContract: verifyingContract,
   };
   const types = {
     Transaction: [
-      { name: "nonce", type: "uint256" },
-      { name: "to", type: "address" },
-      { name: "value", type: "uint256" },
-      { name: "data", type: "bytes" },
-      { name: "deadline", type: "uint256" },
+      {name: 'nonce', type: 'uint256'},
+      {name: 'to', type: 'address'},
+      {name: 'value', type: 'uint256'},
+      {name: 'data', type: 'bytes'},
+      {name: 'deadline', type: 'uint256'},
     ],
   };
   const values = transaction;
-  return { domain, types, values };
+  return {domain, types, values};
 };
 
 const generateSignature = async (
@@ -54,7 +54,7 @@ const generateSignature = async (
   deadline: number,
   chainId: number,
   verifyingContract: string,
-  signer: ethers.providers.JsonRpcSigner | ethers.Wallet
+  signer: ethers.providers.JsonRpcSigner | ethers.Wallet,
 ): Promise<string> => {
   const transaction: Transaction = {
     nonce,
@@ -63,10 +63,10 @@ const generateSignature = async (
     data,
     deadline,
   };
-  const { domain, types, values } = generateMsgData(
+  const {domain, types, values} = generateMsgData(
     transaction,
     chainId,
-    verifyingContract
+    verifyingContract,
   );
   const signature = await signer._signTypedData(domain, types, values);
   return signature;
@@ -79,20 +79,20 @@ async function generateTransferTokenSignature(
   amount: BigNumberish,
   signer: ethers.providers.JsonRpcSigner | ethers.Wallet,
   chainId: number,
-  deadline: number
+  deadline: number,
 ) {
   return generateSignature(
     generateRandomNonce(),
     tokenAddress,
     0,
-    MyUSD__factory.createInterface().encodeFunctionData("transfer", [
+    MyUSD__factory.createInterface().encodeFunctionData('transfer', [
       toAddress,
       amount,
     ]),
     deadline,
     chainId,
     from,
-    signer
+    signer,
   );
 }
 
@@ -104,13 +104,13 @@ async function generateCreateSplitSignature(
   recipients: SmartAccount.SplitRecipientStruct[],
   signer: ethers.providers.JsonRpcSigner | ethers.Wallet,
   chainId: number,
-  deadline: number
+  deadline: number,
 ) {
   return generateSignature(
     generateRandomNonce(),
     tokenAddress,
     0,
-    SmartAccount__factory.createInterface().encodeFunctionData("createSplit", [
+    SmartAccount__factory.createInterface().encodeFunctionData('createSplit', [
       tokenAddress,
       toAddress,
       userAmount,
@@ -119,7 +119,7 @@ async function generateCreateSplitSignature(
     deadline,
     chainId,
     from,
-    signer
+    signer,
   );
 }
 

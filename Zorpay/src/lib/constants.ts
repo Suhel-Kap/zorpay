@@ -17,10 +17,33 @@ const COLORS = {
   SECONDARY_TEXT: '#AAAAAA',
 };
 
+const OP_BNB_TESTNET_RPC_URL = 'https://opbnb-testnet-rpc.bnbchain.org';
+const LINEA_SEPOLIA_RPC_URL = 'https://rpc.sepolia.linea.build';
+const NEON_EVM_DEVNET_RPC_URL = 'https://neon-evm-devnet.drpc.org';
+
+const NETWORKS = {
+  5611: {
+    name: 'OP BNB Testnet',
+    rpcUrl: OP_BNB_TESTNET_RPC_URL,
+  },
+  59141: {
+    name: 'Linea Sepolia',
+    rpcUrl: LINEA_SEPOLIA_RPC_URL,
+  },
+  245022926: {
+    name: 'Neon EVM Devnet',
+    rpcUrl: NEON_EVM_DEVNET_RPC_URL,
+  },
+};
+
+const BACKEND_URL = 'https://zorpay.vercel.app/api';
+
 export {
   BINANCE_TESTNET_RPC_URL,
   BINANCE_TESTNET_CHAIN_ID,
   MAGIC_API_KEY,
   magic,
   COLORS,
+  NETWORKS,
+  BACKEND_URL,
 };

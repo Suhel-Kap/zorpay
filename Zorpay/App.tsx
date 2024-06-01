@@ -11,6 +11,7 @@ import {chains, wagmiConfig, PROJECT_ID} from './src/lib/wagmiConfig';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Web3Modal, createWeb3Modal} from '@web3modal/wagmi-react-native';
 import {WagmiConfig} from 'wagmi';
+import {SignerProvider} from './src/context/signerContext';
 
 createWeb3Modal({
   projectId: PROJECT_ID,
@@ -26,9 +27,11 @@ function App(): React.JSX.Element {
           loading={<ActivityIndicator size={'large'} />}
           persistor={persistor}>
           <WagmiConfig config={wagmiConfig}>
-            <Web3Modal />
-            <magic.Relayer />
-            <Root />
+            <SignerProvider>
+              <Web3Modal />
+              <magic.Relayer />
+              <Root />
+            </SignerProvider>
           </WagmiConfig>
         </PersistGate>
       </Provider>

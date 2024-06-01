@@ -3,7 +3,11 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {COLORS, magic} from '../../lib/constants';
-import {setIsMagic, setLoggedIn} from '../../stores/user.reducer';
+import {
+  setEoaAddress,
+  setIsMagic,
+  setLoggedIn,
+} from '../../stores/user.reducer';
 import {useAppDispatch} from '../../hooks/storeHooks';
 import {styles} from './styles';
 import {useWeb3Modal, useWeb3ModalState} from '@web3modal/wagmi-react-native';
@@ -26,6 +30,8 @@ const Login = () => {
       });
       console.log(res);
       const isLoggedIn = await magic.user.isLoggedIn();
+      const eoa = (await magic.user.getInfo()).publicAddress;
+      dispatch(setEoaAddress(eoa));
       console.log(isLoggedIn);
       if (isLoggedIn) {
         dispatch(setLoggedIn(true));

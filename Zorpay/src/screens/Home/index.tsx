@@ -28,10 +28,12 @@ import {
   getSmartAccountAddress,
 } from '../../utils/read.contract';
 import {createSmartAccount} from '../../utils/write.contract';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {height} = Dimensions.get('window');
 
 const Home = ({navigation}) => {
+  const [transactionHistory, setTransactionHistory] = useState([] as any[]);
   const eoaAddress = useAppSelector(getEoaAddress);
   const smartAccountAddress = useAppSelector(getSmartAccount);
   const usdcBalance = useAppSelector(getUsdcBalance);
@@ -59,6 +61,10 @@ const Home = ({navigation}) => {
   useEffect(() => {
     const interval = setInterval(function () {
       if (smartAccountAddress) dispatch(fetchUsdcBalance());
+      AsyncStorage.getItem('transactionHistory').then(res => {
+        console.log('transactionHistory', res);
+        setTransactionHistory(JSON.parse(res || '[]') as any[]);
+      });
     }, 10000);
 
     return () => {
@@ -161,7 +167,7 @@ const Home = ({navigation}) => {
         <View style={styles.drawerHandle} />
         <Text style={styles.drawerTitle}>Recent Activity</Text>
         <View style={styles.transactionList}>
-          {[1, 2, 3].map((item, index) => (
+          {transactionHistory.map((item, index) => (
             <View key={index} style={styles.transactionItem}>
               <View style={styles.transactionItemLeft}>
                 <Feather
@@ -171,11 +177,13 @@ const Home = ({navigation}) => {
                   color={COLORS.PRIMARY}
                 />
                 <View>
-                  <Text style={styles.transactionItemTitle}>Payment</Text>
-                  <Text style={styles.transactionItemDate}>12:00 PM</Text>
+                  <Text style={styles.transactionItemTitle}>{item.type}</Text>
+                  <Text style={styles.transactionItemDate}>
+                    {new Date(item.time).toLocaleString()}
+                  </Text>
                 </View>
               </View>
-              <Text style={styles.transactionItemAmount}>$10.00</Text>
+              <Text style={styles.transactionItemAmount}>${item.amount}</Text>
             </View>
           ))}
         </View>

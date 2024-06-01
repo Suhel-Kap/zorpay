@@ -9,8 +9,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "clean": "react-native clean",
-    "postinstall": "node_modules/.bin/rn-nodeify --install crypto,fs,https --hack"
+    "clean": "react-native clean"
   },
   "dependencies": {
     "@magic-ext/react-native-bare-oauth": "latest",

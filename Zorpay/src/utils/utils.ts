@@ -8,14 +8,6 @@ import {
   SmartAccount__factory,
 } from './types';
 
-export type Transaction = {
-  nonce: number | string;
-  to: string;
-  value: number;
-  data: string;
-  deadline: number;
-};
-
 const generateRandomNonce = () => {
   const randomArray = crypto.getRandomValues(new Uint8Array(32));
   const randomNonce = ethers.utils.hexlify(randomArray);
@@ -23,8 +15,8 @@ const generateRandomNonce = () => {
 };
 
 const generateMsgData = (
-  transaction: Transaction,
-  chainId: number,
+  transaction: SmartAccount.TransactionStruct,
+  chainId: number | string,
   verifyingContract: string,
 ) => {
   const domain = {
@@ -52,11 +44,11 @@ const generateSignature = async (
   value: number,
   data: string,
   deadline: number,
-  chainId: number,
+  chainId: number | string,
   verifyingContract: string,
   signer: ethers.providers.JsonRpcSigner | ethers.Wallet,
-): Promise<string> => {
-  const transaction: Transaction = {
+) => {
+  const transaction: SmartAccount.TransactionStruct = {
     nonce,
     to,
     value,
@@ -69,7 +61,7 @@ const generateSignature = async (
     verifyingContract,
   );
   const signature = await signer._signTypedData(domain, types, values);
-  return signature;
+  return {signature, transaction};
 };
 
 async function generateTransferTokenSignature(

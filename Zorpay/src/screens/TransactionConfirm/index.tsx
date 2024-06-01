@@ -10,11 +10,21 @@ import {
   setTransactionDetails,
   resetTransaction,
 } from '../../stores/transaction.reducer';
+import {generateRandomNonce, generateSignature} from '../../utils/utils';
+import {getChainId, getSmartAccountAddress} from '../../stores/user.reducer';
+import {SupportedChainIds} from '../../utils/read.contract';
+import {magic} from '../../lib/constants';
+import {ethers} from 'ethers';
+import {executeTransaction} from '../../utils/write.contract';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TransactionConfirm = ({navigation}) => {
   const dispatch = useAppDispatch();
-  const {to, data, value, message, isProcessing, transactionHash} =
+  const {to, data, value, message, isProcessing, transactionHash, extraData} =
     useAppSelector(getTransaction);
+
+  const smartAccountAddress = useAppSelector(getSmartAccountAddress);
+  const chainId = useAppSelector(getChainId) as SupportedChainIds;
 
   const handleConfirm = async () => {
     try {
@@ -27,12 +37,48 @@ const TransactionConfirm = ({navigation}) => {
       if (success) {
         dispatch(setProcessing(true));
 
-        // Simulate sending transaction
-        setTimeout(() => {
-          const hash = '0x1234567890abcdef'; // Example hash
-          dispatch(setTransactionHash(hash));
+        const signer = new ethers.providers.Web3Provider(
+          // @ts-ignore
+          magic?.rpcProvider,
+        ).getSigner();
+
+        const {signature, transaction} = await generateSignature(
+          generateRandomNonce(),
+          to,
+          0,
+          data,
+          Date.now() + 1000 * 60 * 5, // 5 minutes
+          chainId,
+          smartAccountAddress,
+          signer,
+        );
+        console.log('executing transaction', transaction, signature);
+        const {success, txReceipt} = await executeTransaction(
+          transaction,
+          signature,
+          chainId,
+          smartAccountAddress,
+        );
+        if (success) {
+          const txHist = await AsyncStorage.getItem('transactionHistory');
+          await AsyncStorage.setItem(
+            'transactionHistory',
+            JSON.stringify([
+              ...(txHist ? JSON.parse(txHist) : []),
+              {
+                type: extraData.type,
+                amount: extraData.amount,
+                transactionHash: txReceipt!.transactionHash,
+                time: Date.now(),
+              },
+            ]),
+          );
+          dispatch(setTransactionHash(txReceipt!.transactionHash));
           dispatch(setProcessing(false));
-        }, 3000);
+        } else {
+          // handle failure here
+          console.log('Transaction failed');
+        }
       }
     } catch (error) {
       console.log('Authentication Failed', error);

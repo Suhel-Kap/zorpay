@@ -6,6 +6,7 @@ const initialState = {
   data: '',
   value: '',
   message: '',
+  extraData: {},
   transactionHash: null,
   isProcessing: false,
 };
@@ -19,6 +20,7 @@ export const transactionSlice = createSlice({
       state.data = action.payload.data;
       state.value = action.payload.value;
       state.message = action.payload.message;
+      state.extraData = action.payload.extraData;
     },
     setProcessing: (state, action) => {
       state.isProcessing = action.payload;
@@ -33,6 +35,7 @@ export const transactionSlice = createSlice({
       state.message = '';
       state.transactionHash = null;
       state.isProcessing = false;
+      state.extraData = {};
     },
   },
 });

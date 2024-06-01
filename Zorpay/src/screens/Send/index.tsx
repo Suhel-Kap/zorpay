@@ -4,9 +4,17 @@ import {styles} from './styles';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {COLORS} from '../../lib/constants';
 import {isAddress} from 'viem';
-import {useAppDispatch} from '../../hooks/storeHooks';
+import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {ToastAndroid} from 'react-native';
-import {setTransactionDetails} from '../../stores/transaction.reducer';
+import {
+  resetTransaction,
+  setTransactionDetails,
+} from '../../stores/transaction.reducer';
+import CONTRACT_ADDRESSES from '../../utils/contractAddresses/contract-address.json';
+import {getChainId, getUsdcBalance} from '../../stores/user.reducer';
+import {SupportedChainIds} from '../../utils/read.contract';
+import {MyUSD__factory} from '../../utils/types';
+import {ethers} from 'ethers';
 
 const Send = ({navigation}) => {
   const [screen, setScreen] = useState('walletAddress');
@@ -15,6 +23,8 @@ const Send = ({navigation}) => {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const dispatch = useAppDispatch();
+  const chainId = useAppSelector(getChainId) as SupportedChainIds;
+  const usdcBalance = useAppSelector(getUsdcBalance);
 
   const handleNext = () => {
     if (screen === 'walletAddress' && address) {
@@ -27,12 +37,20 @@ const Send = ({navigation}) => {
       // Handle the final submission
       console.log('Send to:', address);
       console.log('Amount:', amount);
+      dispatch(resetTransaction());
       dispatch(
         setTransactionDetails({
-          to: '0xbdfsa',
+          to: CONTRACT_ADDRESSES[chainId].MyUSD,
           value: '0',
-          data: '0x',
-          message: 'Send to address',
+          data: MyUSD__factory.createInterface().encodeFunctionData(
+            'transfer',
+            [address, ethers.utils.parseUnits(amount, 18)],
+          ),
+          message: `Send ${amount} USD to ${address}`,
+          extraData: {
+            type: 'Transfer',
+            amount: amount,
+          },
         }),
       );
       navigation.navigate('TransactionConfirm');
@@ -98,7 +116,7 @@ const Send = ({navigation}) => {
           <Text style={styles.label}>Sending to:</Text>
           <Text style={styles.address}>{address}</Text>
           <Text style={styles.amountText}>${amount || '0.00'}</Text>
-          <Text style={styles.amountSubText}>$19.94 available</Text>
+          <Text style={styles.amountSubText}>${usdcBalance} available</Text>
           <View style={styles.keyboardContainer}>
             {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0'].map(
               key => (

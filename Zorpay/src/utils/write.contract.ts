@@ -41,4 +41,38 @@ const createSmartAccount = async (
   return txReceipt;
 };
 
-export {createSmartAccount};
+const executeTransaction = async (
+  transaction: SmartAccount.TransactionStruct,
+  signature: string,
+  chainId: SupportedChainIds,
+  userSmartAccountAddress: string,
+) => {
+  const txData = SmartAccount__factory.createInterface().encodeFunctionData(
+    'execute',
+    [transaction, signature],
+  );
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/ExecuteAny`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        rpcURL: NETWORKS[chainId].rpcUrl,
+        transactionData: txData,
+        to: userSmartAccountAddress,
+      }),
+    });
+
+    const {txReceipt, txResponse} = (await res.json()) as {
+      txResponse: ethers.providers.TransactionResponse;
+      txReceipt: ethers.providers.TransactionReceipt;
+    };
+    return {success: true, txReceipt};
+  } catch (error) {
+    return {success: false, txReceipt: undefined};
+  }
+};
+
+export {createSmartAccount, executeTransaction};

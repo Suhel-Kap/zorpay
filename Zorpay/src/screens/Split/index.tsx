@@ -11,10 +11,22 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import {ToastAndroid} from 'react-native';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {styles} from './styles';
-import {COLORS, magic} from '../../lib/constants';
-import {useAppDispatch} from '../../hooks/storeHooks';
-import {setTransactionDetails} from '../../stores/transaction.reducer';
+import {COLORS, NETWORKS, magic} from '../../lib/constants';
+import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
+import {
+  resetTransaction,
+  setTransactionDetails,
+} from '../../stores/transaction.reducer';
 import {isAddress} from 'viem';
+import {
+  getChainId,
+  getSmartAccountAddress,
+  getUsdcBalance,
+} from '../../stores/user.reducer';
+import {SmartAccount, SmartAccount__factory} from '../../utils/types';
+import {SupportedChainIds} from '../../utils/read.contract';
+import CONTRACT_ADDRESSES from '../../utils/contractAddresses/contract-address.json';
+import {ethers} from 'ethers';
 
 const Split = ({navigation}) => {
   const [screen, setScreen] = useState('receiver');
@@ -22,8 +34,11 @@ const Split = ({navigation}) => {
   const [amount, setAmount] = useState('');
   const [addresses, setAddresses] = useState([]);
   const [currentAddress, setCurrentAddress] = useState('');
-  const [userAddress, setUserAddress] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+
+  const smartAccountAddress = useAppSelector(getSmartAccountAddress);
+  const chainId = useAppSelector(getChainId) as SupportedChainIds;
+  const usdcBalance = useAppSelector(getUsdcBalance);
 
   const dispatch = useAppDispatch();
 
@@ -39,15 +54,38 @@ const Split = ({navigation}) => {
     } else if (
       screen === 'contributors' &&
       addresses.length > 0 &&
-      userAddress
+      smartAccountAddress
     ) {
+      const userAmount = ethers.utils.parseEther(
+        (parseFloat(amount) / (addresses.length + 1)).toString(),
+      );
+      const recipientsData: SmartAccount.SplitRecipientStruct[] = addresses.map(
+        (address: string) => ({
+          recipient: address,
+          amountToPay: userAmount,
+        }),
+      );
+      dispatch(resetTransaction());
       dispatch(
         setTransactionDetails({
-          to: receiverAddress,
-          value: amount,
-          contributors: addresses,
-          data: '0x',
-          message: 'Split payment',
+          to: smartAccountAddress,
+          value: 0,
+          data: SmartAccount__factory.createInterface().encodeFunctionData(
+            'createSplit',
+            [
+              CONTRACT_ADDRESSES[chainId].MyUSD,
+              receiverAddress,
+              userAmount,
+              recipientsData,
+            ],
+          ),
+          message: `Split ${amount} USD to ${
+            addresses.length + 1
+          } people including you for payment to ${receiverAddress}`,
+          extraData: {
+            type: 'Split',
+            amount: amount,
+          },
         }),
       );
       navigation.navigate('TransactionConfirm');
@@ -85,13 +123,6 @@ const Split = ({navigation}) => {
   const handleBackspace = () => {
     setAmount(amount.slice(0, -1));
   };
-
-  useEffect(() => {
-    magic.user.getInfo().then(info => {
-      console.log(info.publicAddress);
-      setUserAddress(info.publicAddress as string);
-    });
-  }, []);
 
   const renderAddress = ({item, index}) => (
     <View style={styles.addressItem}>
@@ -151,7 +182,7 @@ const Split = ({navigation}) => {
           <Text style={styles.label}>Sending to:</Text>
           <Text style={styles.address}>{receiverAddress}</Text>
           <Text style={styles.amountText}>${amount || '0.00'}</Text>
-          <Text style={styles.amountSubText}>$19.94 available</Text>
+          <Text style={styles.amountSubText}>${usdcBalance} available</Text>
           <View style={styles.keyboardContainer}>
             {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0'].map(
               key => (
@@ -190,7 +221,7 @@ const Split = ({navigation}) => {
             <Text style={styles.scanButtonText}>Scan QR Code</Text>
           </TouchableOpacity>
           <View style={styles.addressItem}>
-            <Text style={styles.addressText}>{userAddress}</Text>
+            <Text style={styles.addressText}>{smartAccountAddress}</Text>
             <Text style={styles.addressText}>
               ${(parseFloat(amount) / (addresses.length + 1)).toFixed(1)}
             </Text>

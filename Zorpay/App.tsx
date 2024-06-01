@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, {useEffect} from 'react';
 import '@walletconnect/react-native-compat';
 import {PersistGate} from 'redux-persist/lib/integration/react';

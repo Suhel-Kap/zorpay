@@ -4,6 +4,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 const initialState = {
   user: {},
   loggedIn: false,
+  isMagic: false,
   loading: false,
 };
 
@@ -33,6 +34,9 @@ export const userSlice = createSlice({
     setLoggedIn: (state, action) => {
       state.loggedIn = action.payload;
     },
+    setIsMagic: (state, action) => {
+      state.isMagic = action.payload;
+    },
   },
   // extraReducers: builder => {
   //   builder
@@ -52,9 +56,10 @@ export const userSlice = createSlice({
   // },
 });
 
-export const {setUser, setLoggedIn} = userSlice.actions;
+export const {setUser, setLoggedIn, setIsMagic} = userSlice.actions;
 
 export const getUser = state => state.user.user;
 export const getLoggedIn = state => state.user.loggedIn;
+export const getIsMagic = state => state.user.isMagic;
 
 export default userSlice.reducer;

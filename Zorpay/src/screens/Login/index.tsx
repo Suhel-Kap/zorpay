@@ -3,7 +3,7 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {COLORS, magic} from '../../lib/constants';
-import {setLoggedIn} from '../../stores/user.reducer';
+import {setIsMagic, setLoggedIn} from '../../stores/user.reducer';
 import {useAppDispatch} from '../../hooks/storeHooks';
 import {styles} from './styles';
 import {useWeb3Modal, useWeb3ModalState} from '@web3modal/wagmi-react-native';
@@ -27,7 +27,10 @@ const Login = () => {
       console.log(res);
       const isLoggedIn = await magic.user.isLoggedIn();
       console.log(isLoggedIn);
-      if (isLoggedIn) dispatch(setLoggedIn(true));
+      if (isLoggedIn) {
+        dispatch(setLoggedIn(true));
+        dispatch(setIsMagic(true));
+      }
     } catch (e) {
       console.log(e);
     }
@@ -35,7 +38,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (isConnected) dispatch(setLoggedIn(true));
+    if (isConnected) {
+      dispatch(setLoggedIn(true));
+      dispatch(setIsMagic(false));
+    }
   }, [isConnected, isConnecting]);
 
   return (

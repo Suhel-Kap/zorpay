@@ -9,6 +9,15 @@ contract SmartAccount is EIP712 {
     error DeadlineExpired(uint256 deadline);
     error NonceUsed(uint256 nonce);
 
+    event TransactionExecuted(
+        uint256 nonce,
+        address to,
+        uint256 value,
+        bytes data,
+        uint256 deadline,
+        bytes result
+    );
+
     struct Transaction {
         uint256 nonce;
         address to;
@@ -68,6 +77,15 @@ contract SmartAccount is EIP712 {
         if (!success) {
             revert CallFailed(result);
         }
+        nonceUsed[transaction.nonce] = true;
+        emit TransactionExecuted(
+            transaction.nonce,
+            transaction.to,
+            transaction.value,
+            transaction.data,
+            transaction.deadline,
+            result
+        );
         return result;
     }
 }

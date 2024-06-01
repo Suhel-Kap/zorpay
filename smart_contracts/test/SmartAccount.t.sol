@@ -3,18 +3,23 @@ pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
 import {SmartAccount} from "../src/SmartAccount.sol";
+import {SmartAccountFactory} from "../src/SmartAccountFactory.sol";
 
 contract AccountTest is Test {
-    SmartAccount public smartAccount;
+    SmartAccountFactory public smartAccountFactory;
     uint256 ANVIL_PRIVATE_KEY =
         0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
     address user = vm.addr(ANVIL_PRIVATE_KEY);
 
     function setUp() public {
-        smartAccount = new SmartAccount(user);
+        smartAccountFactory = new SmartAccountFactory();
     }
 
     function test_Execute() public {
+        // smartAccount = new SmartAccount(user);
+        SmartAccount smartAccount = smartAccountFactory.createSmartAccount(
+            user
+        );
         Counter counter = new Counter();
         bytes memory data = abi.encodeWithSignature("increment()");
         SmartAccount.Transaction memory transaction = SmartAccount.Transaction({

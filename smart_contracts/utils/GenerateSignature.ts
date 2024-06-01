@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { generateSignature } from "./signatureUtils";
-import fs from "fs";
 
 // takes args passed from console
 const args = process.argv.slice(2);
@@ -44,6 +43,5 @@ const result = generateSignature(
   // rpcUrl
 );
 result.then((signature) => {
-  fs.writeFileSync("signature.txt", signature);
   console.log(signature);
 });

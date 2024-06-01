@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {Test, console} from "forge-std/Test.sol";
 import {SmartAccount} from "../src/SmartAccount.sol";
 import {SmartAccountFactory} from "../src/SmartAccountFactory.sol";
+import {DeployFactory} from "../script/DeployFactory.s.sol";
 
 contract AccountTest is Test {
     SmartAccountFactory public smartAccountFactory;
@@ -12,7 +13,7 @@ contract AccountTest is Test {
     address user = vm.addr(ANVIL_PRIVATE_KEY);
 
     function setUp() public {
-        smartAccountFactory = new SmartAccountFactory();
+        smartAccountFactory = (new DeployFactory()).run();
     }
 
     function test_Execute() public {

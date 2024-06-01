@@ -10,7 +10,8 @@ const data = args[3];
 const deadline = parseInt(args[4]);
 const chainId = parseInt(args[5]);
 const verifyingContract = args[6];
-// const rpcUrl = args[7];
+const privateKey = args[7];
+// const rpcUrl = args[8];
 
 // console.log("args", {
 //   nonce,
@@ -27,9 +28,9 @@ const verifyingContract = args[6];
 // yarn --silent generateSignature 1 0xf39Fd6e51aad88 F6F4ce6aB8827279cffFb92266 0 0x 365 1 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 // NOTE: --silent is added so that it doesn't print the "Done in X.YZs." message after running the script
 
-const ANVIL_PRIVATE_KEY =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-const wallet = new ethers.Wallet(ANVIL_PRIVATE_KEY);
+// const ANVIL_PRIVATE_KEY =
+//   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+const wallet = new ethers.Wallet(privateKey);
 
 const result = generateSignature(
   nonce,

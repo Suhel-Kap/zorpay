@@ -18,6 +18,7 @@
     "typechain": "^8.3.2"
   },
   "scripts": {
+    "test": "forge test --ffi --via-ir",
     "generateSignature": "node ./dist/GenerateSignature.js",
     "generateTypes": "node ./dist/GenerateTypes.js",
     "generateContractAddress": "node ./dist/GenerateContractAddress.js",

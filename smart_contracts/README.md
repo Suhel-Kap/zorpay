@@ -23,6 +23,8 @@ forge test --ffi
 ### Deploy
 
 ```bash
+source .env
+
 # opBNB Testnet
 forge script script/DeployFactory.s.sol:DeployFactory --chain-id 5611 --rpc-url $OP_BNB_TESTNET_RPC_URL --broadcast --verify --verifier etherscan --etherscan-api-key opBNB_testnet --private-key $PRIVATE_KEY --legacy -vvvv
 # NOTE: --legacy is added due to the error: - server returned an error response: error code -32000: transaction underpriced: tip needed 1, tip permitted 0

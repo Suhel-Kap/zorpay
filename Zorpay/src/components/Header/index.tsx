@@ -5,10 +5,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useAccount, useDisconnect} from 'wagmi';
 import {useAppDispatch} from '../../hooks/storeHooks';
 import {setLoggedIn} from '../../stores/user.reducer';
-import {magic} from '../../lib/constants';
+import {COLORS, magic} from '../../lib/constants';
 import {ToastAndroid} from 'react-native';
 
-const Header = () => {
+const Header = ({name}: {name: string}) => {
   const {disconnectAsync} = useDisconnect();
   const {isConnected} = useAccount();
   const dispatch = useAppDispatch();
@@ -30,9 +30,9 @@ const Header = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Zorpay</Text>
+      <Text style={styles.text}>{name !== 'Home' ? name : 'Zorpay'}</Text>
       <TouchableOpacity onPress={handleDisconnect}>
-        <AntDesign size={20} name="logout" />
+        <AntDesign size={20} name="logout" color={COLORS.SECONDARY_TEXT} />
       </TouchableOpacity>
     </View>
   );

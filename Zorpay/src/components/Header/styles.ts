@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {COLORS} from '../../lib/constants';
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,12 +9,13 @@ export const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 10,
     alignItems: 'center',
-    height: 50,
+    height: 70,
+    backgroundColor: 'white',
   },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: COLORS.PRIMARY_TEXT,
   },
   logoImage: {
     width: 30,

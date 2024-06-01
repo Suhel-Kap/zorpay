@@ -1,18 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import React, {useState} from 'react';
 import SplashScreen from './screens/Splash';
-import Login from './screens/Login';
+import MainNavigation from './navigation';
 
-const Root = ({magic}) => {
+const Root = () => {
   const [intro, setIntro] = useState(true);
 
-  return intro ? (
-    <SplashScreen setIntro={setIntro} />
-  ) : (
-    <>
-      <Login magic={magic} />
-    </>
-  );
+  return intro ? <SplashScreen setIntro={setIntro} /> : <MainNavigation />;
 };
 
 export default Root;

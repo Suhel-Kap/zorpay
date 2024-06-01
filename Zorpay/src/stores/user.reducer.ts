@@ -3,6 +3,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 // const of type AllIndexesResponse, appended with a boolean for loading state
 const initialState = {
   user: {},
+  loggedIn: false,
   loading: false,
 };
 
@@ -29,6 +30,9 @@ export const userSlice = createSlice({
       state.user = action.payload;
       state.loading = false;
     },
+    setLoggedIn: (state, action) => {
+      state.loggedIn = action.payload;
+    },
   },
   // extraReducers: builder => {
   //   builder
@@ -48,8 +52,9 @@ export const userSlice = createSlice({
   // },
 });
 
-export const {setUser} = userSlice.actions;
+export const {setUser, setLoggedIn} = userSlice.actions;
 
 export const getUser = state => state.user.user;
+export const getLoggedIn = state => state.user.loggedIn;
 
 export default userSlice.reducer;

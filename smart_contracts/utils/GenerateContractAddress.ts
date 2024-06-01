@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const CONTRACT_ADDRESS_DIR = "./utils/";
+const CONTRACT_ADDRESS_DIR = "../Zorpay/src/utils/contractAddresses";
 
 function ensureDirectoryExistence(filePath: string) {
   var dirname = path.dirname(filePath);
@@ -18,7 +18,7 @@ async function main() {
   for (const chainId of broadcastFiles) {
     const runJsonFile = fs.readFileSync(
       "./broadcast/DeployFactory.s.sol/" + chainId + "/run-latest.json",
-      "utf-8"
+      "utf-8",
     );
     const runFile = JSON.parse(runJsonFile);
     const currentAddresses: Record<string, string> = {};

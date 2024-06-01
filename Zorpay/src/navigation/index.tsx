@@ -9,6 +9,7 @@ import Send from '../screens/Send';
 import Receive from '../screens/Receive';
 import Header from '../components/Header';
 import Split from '../screens/Split';
+import TransactionConfirm from '../screens/TransactionConfirm';
 const Stack = createNativeStackNavigator();
 
 const MainNavigation = () => {
@@ -47,6 +48,13 @@ const MainNavigation = () => {
           }}
           name="Split"
           component={Split}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="TransactionConfirm"
+          component={TransactionConfirm}
         />
       </Stack.Navigator>
     </NavigationContainer>

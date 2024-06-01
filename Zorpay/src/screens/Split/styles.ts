@@ -1,8 +1,7 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {COLORS} from '../../lib/constants';
-import {Dimensions} from 'react-native';
 
-const {height, width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   container: {
@@ -103,5 +102,42 @@ export const styles = StyleSheet.create({
   },
   qrModal: {
     height: height * 0.8,
+  },
+  addButton: {
+    width: '100%',
+    height: 50,
+    backgroundColor: COLORS.SECONDARY,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+  addButtonText: {
+    fontSize: 18,
+    color: COLORS.PRIMARY_TEXT,
+    fontWeight: 'bold',
+  },
+  addressList: {
+    width: '100%',
+    marginVertical: 20,
+  },
+  addressItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: COLORS.SECONDARY,
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 5,
+    height: 50,
+    width: '100%',
+  },
+  addressText: {
+    fontSize: 12,
+    color: COLORS.PRIMARY_TEXT,
+  },
+  deleteText: {
+    fontSize: 16,
+    color: 'red',
   },
 });

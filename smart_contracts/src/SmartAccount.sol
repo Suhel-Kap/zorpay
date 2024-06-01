@@ -4,7 +4,6 @@ import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {console} from "forge-std/Console.sol";
 
 contract SmartAccount is EIP712 {
     using SafeERC20 for IERC20;
@@ -117,7 +116,6 @@ contract SmartAccount is EIP712 {
             )
         );
 
-        console.log("01");
         if (
             ECDSA.recover(
                 digest,
@@ -125,17 +123,13 @@ contract SmartAccount is EIP712 {
                 signature
             ) != owner
         ) {
-            console.log("02");
             revert InvalidSignature();
         }
-        console.log("03");
         (bool success, bytes memory result) = transaction.to.call{
             value: transaction.value
         }(transaction.data);
 
-        console.log("04");
         if (!success) {
-            console.log("05");
             revert CallFailed(result);
         }
         nonceUsed[transaction.nonce] = true;

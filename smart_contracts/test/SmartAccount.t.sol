@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {Test, console} from "forge-std/Test.sol";
 import {SmartAccount} from "../src/SmartAccount.sol";
 import {SmartAccountFactory} from "../src/SmartAccountFactory.sol";
+import {MyUSD} from "../src/MyUSD.sol";
 import {DeployFactory} from "../script/DeployFactory.s.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -196,13 +197,5 @@ contract Counter {
 
     function increment() public {
         number++;
-    }
-}
-
-contract MyUSD is ERC20 {
-    constructor() ERC20("MyUSD", "USD") {}
-
-    function mint(address to, uint256 amount) public {
-        _mint(to, amount);
     }
 }

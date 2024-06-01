@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-module.exports = {
-  ...nextConfig,
+const nextConfig = {
   //fix error: No 'Access-Control-Allow-Origin' header is present on the requested resource
   async headers() {
     return [
@@ -26,3 +23,5 @@ module.exports = {
     ];
   },
 };
+
+export default nextConfig;

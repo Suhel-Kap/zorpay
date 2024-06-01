@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
 type Transaction = {
-  nonce: number;
+  nonce: number | string;
   to: string;
   value: number;
   data: string;
@@ -58,7 +58,7 @@ const generateMsgData = (
 };
 
 const generateSignature = async (
-  nonce: number,
+  nonce: number | string,
   to: string,
   value: number,
   data: string,

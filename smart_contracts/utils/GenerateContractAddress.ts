@@ -13,25 +13,29 @@ function ensureDirectoryExistence(filePath: string) {
 }
 
 async function main() {
-  const broadcastFiles = fs.readdirSync("./broadcast/DeployFactory.s.sol");
   const addresses: Record<string, Record<string, string>> = {};
-  for (const chainId of broadcastFiles) {
-    const runJsonFile = fs.readFileSync(
-      "./broadcast/DeployFactory.s.sol/" + chainId + "/run-latest.json",
-      "utf-8",
-    );
-    const runFile = JSON.parse(runJsonFile);
-    const currentAddresses: Record<string, string> = {};
-    for (const transaction of runFile.transactions) {
-      if (transaction.transactionType === "CREATE") {
-        currentAddresses[transaction.contractName] =
-          transaction.contractAddress;
+  const broadcastFiles = fs.readdirSync("./broadcast");
+  console.log(broadcastFiles);
+  for (const deployScript of broadcastFiles) {
+    const runFiles = fs.readdirSync("./broadcast/" + deployScript);
+    for (const chainId of runFiles) {
+      const runJsonFile = fs.readFileSync(
+        "./broadcast/" + deployScript + "/" + chainId + "/run-latest.json",
+        "utf-8",
+      );
+      const runFile = JSON.parse(runJsonFile);
+      const currentAddresses: Record<string, string> = {};
+      for (const transaction of runFile.transactions) {
+        if (transaction.transactionType === "CREATE") {
+          currentAddresses[transaction.contractName] =
+            transaction.contractAddress;
+        }
       }
+      addresses[chainId] = {
+        ...addresses[chainId],
+        ...currentAddresses,
+      };
     }
-    addresses[chainId] = currentAddresses;
-    addresses[chainId] = {
-      ...addresses[chainId],
-    };
   }
   console.log(addresses);
   const addressFile = path.join(CONTRACT_ADDRESS_DIR, "contract-address.json");

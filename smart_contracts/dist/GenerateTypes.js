@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const glob_1 = require("glob");
 const path_1 = __importDefault(require("path"));
 const typechain_1 = require("typechain");
-const TYPES_DIR = "./utils/types";
+const TYPES_DIR = "../Zorpay/src/utils/types";
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const cwd = process.cwd();

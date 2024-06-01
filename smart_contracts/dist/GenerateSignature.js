@@ -24,7 +24,7 @@ const privateKey = args[7];
 //   // rpcUrl
 // });
 // you can run the script by running the following command
-// yarn --silent generateSignature 1 0xf39Fd6e51aad88 F6F4ce6aB8827279cffFb92266 0 0x 365 1 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+// yarn --silent generateSignature 1 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 0 0x 365 1 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 // NOTE: --silent is added so that it doesn't print the "Done in X.YZs." message after running the script
 // const ANVIL_PRIVATE_KEY =
 //   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";

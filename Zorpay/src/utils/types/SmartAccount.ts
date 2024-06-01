@@ -8,6 +8,7 @@ import type {
   BytesLike,
   CallOverrides,
   ContractTransaction,
+  Overrides,
   PayableOverrides,
   PopulatedTransaction,
   Signer,
@@ -27,6 +28,16 @@ import type {
 } from "./common";
 
 export declare namespace SmartAccount {
+  export type SplitRecipientStruct = {
+    recipient: string;
+    amountToPay: BigNumberish;
+  };
+
+  export type SplitRecipientStructOutput = [string, BigNumber] & {
+    recipient: string;
+    amountToPay: BigNumber;
+  };
+
   export type TransactionStruct = {
     nonce: BigNumberish;
     to: string;
@@ -48,20 +59,97 @@ export declare namespace SmartAccount {
     data: string;
     deadline: BigNumber;
   };
+
+  export type SplitRecipientDetailsStruct = {
+    recipient: SmartAccount.SplitRecipientStruct;
+    amountPaid: BigNumberish;
+  };
+
+  export type SplitRecipientDetailsStructOutput = [
+    SmartAccount.SplitRecipientStructOutput,
+    BigNumber
+  ] & {
+    recipient: SmartAccount.SplitRecipientStructOutput;
+    amountPaid: BigNumber;
+  };
+
+  export type SplitStruct = {
+    splitId: BigNumberish;
+    token: string;
+    to: string;
+    totalAmount: BigNumberish;
+    splitRecipientsDetails: SmartAccount.SplitRecipientDetailsStruct[];
+  };
+
+  export type SplitStructOutput = [
+    BigNumber,
+    string,
+    string,
+    BigNumber,
+    SmartAccount.SplitRecipientDetailsStructOutput[]
+  ] & {
+    splitId: BigNumber;
+    token: string;
+    to: string;
+    totalAmount: BigNumber;
+    splitRecipientsDetails: SmartAccount.SplitRecipientDetailsStructOutput[];
+  };
+
+  export type SplitRequestStruct = {
+    splitId: BigNumberish;
+    requester: string;
+    amount: BigNumberish;
+  };
+
+  export type SplitRequestStructOutput = [BigNumber, string, BigNumber] & {
+    splitId: BigNumber;
+    requester: string;
+    amount: BigNumber;
+  };
 }
 
 export interface SmartAccountInterface extends utils.Interface {
   functions: {
+    "createSplit(address,address,uint256,(address,uint256)[])": FunctionFragment;
     "eip712Domain()": FunctionFragment;
     "execute((uint256,address,uint256,bytes,uint256),bytes)": FunctionFragment;
+    "fullfillSplit(uint256,uint256,uint256)": FunctionFragment;
+    "getAllSplitsCreated()": FunctionFragment;
+    "getSplit(uint256)": FunctionFragment;
+    "getSplitRequest(uint256)": FunctionFragment;
+    "getSplitRequests()": FunctionFragment;
     "nonceUsed(uint256)": FunctionFragment;
+    "notifyFullfillSplit(uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
+    "requestSplit(uint256,uint256)": FunctionFragment;
+    "splitRequests(uint256)": FunctionFragment;
+    "splits(uint256)": FunctionFragment;
+    "totalSplits()": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "eip712Domain" | "execute" | "nonceUsed" | "owner"
+    nameOrSignatureOrTopic:
+      | "createSplit"
+      | "eip712Domain"
+      | "execute"
+      | "fullfillSplit"
+      | "getAllSplitsCreated"
+      | "getSplit"
+      | "getSplitRequest"
+      | "getSplitRequests"
+      | "nonceUsed"
+      | "notifyFullfillSplit"
+      | "owner"
+      | "requestSplit"
+      | "splitRequests"
+      | "splits"
+      | "totalSplits"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "createSplit",
+    values: [string, string, BigNumberish, SmartAccount.SplitRecipientStruct[]]
+  ): string;
   encodeFunctionData(
     functionFragment: "eip712Domain",
     values?: undefined
@@ -71,25 +159,107 @@ export interface SmartAccountInterface extends utils.Interface {
     values: [SmartAccount.TransactionStruct, BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "fullfillSplit",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAllSplitsCreated",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSplit",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSplitRequest",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSplitRequests",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "nonceUsed",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "notifyFullfillSplit",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "requestSplit",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "splitRequests",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "splits",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalSplits",
+    values?: undefined
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "createSplit",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "eip712Domain",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "fullfillSplit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAllSplitsCreated",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getSplit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getSplitRequest",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSplitRequests",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "nonceUsed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "notifyFullfillSplit",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "requestSplit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "splitRequests",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "splits", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSplits",
+    data: BytesLike
+  ): Result;
 
   events: {
     "EIP712DomainChanged()": EventFragment;
+    "SplitCreated(uint256,address,address,uint256,(address,uint256)[])": EventFragment;
+    "SplitFullfilled(uint256,address,uint256)": EventFragment;
     "TransactionExecuted(uint256,address,uint256,bytes,uint256,bytes)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "EIP712DomainChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SplitCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SplitFullfilled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransactionExecuted"): EventFragment;
 }
 
@@ -101,6 +271,38 @@ export type EIP712DomainChangedEvent = TypedEvent<
 
 export type EIP712DomainChangedEventFilter =
   TypedEventFilter<EIP712DomainChangedEvent>;
+
+export interface SplitCreatedEventObject {
+  splitId: BigNumber;
+  token: string;
+  to: string;
+  totalAmount: BigNumber;
+  splitRecipients: SmartAccount.SplitRecipientStructOutput[];
+}
+export type SplitCreatedEvent = TypedEvent<
+  [
+    BigNumber,
+    string,
+    string,
+    BigNumber,
+    SmartAccount.SplitRecipientStructOutput[]
+  ],
+  SplitCreatedEventObject
+>;
+
+export type SplitCreatedEventFilter = TypedEventFilter<SplitCreatedEvent>;
+
+export interface SplitFullfilledEventObject {
+  splitId: BigNumber;
+  recipient: string;
+  amount: BigNumber;
+}
+export type SplitFullfilledEvent = TypedEvent<
+  [BigNumber, string, BigNumber],
+  SplitFullfilledEventObject
+>;
+
+export type SplitFullfilledEventFilter = TypedEventFilter<SplitFullfilledEvent>;
 
 export interface TransactionExecutedEventObject {
   nonce: BigNumber;
@@ -145,6 +347,14 @@ export interface SmartAccount extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    createSplit(
+      token: string,
+      to: string,
+      userAmount: BigNumberish,
+      splitRecipients: SmartAccount.SplitRecipientStruct[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
     eip712Domain(
       overrides?: CallOverrides
     ): Promise<
@@ -165,13 +375,84 @@ export interface SmartAccount extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
+    fullfillSplit(
+      splitRequestIndex: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    getAllSplitsCreated(
+      overrides?: CallOverrides
+    ): Promise<[SmartAccount.SplitStructOutput[]]>;
+
+    getSplit(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[SmartAccount.SplitStructOutput]>;
+
+    getSplitRequest(
+      splitRequestIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[SmartAccount.SplitRequestStructOutput]>;
+
+    getSplitRequests(
+      overrides?: CallOverrides
+    ): Promise<[SmartAccount.SplitRequestStructOutput[]]>;
+
     nonceUsed(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    notifyFullfillSplit(
+      splitId: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
+
+    requestSplit(
+      splitId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    splitRequests(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string, BigNumber] & {
+        splitId: BigNumber;
+        requester: string;
+        amount: BigNumber;
+      }
+    >;
+
+    splits(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string, string, BigNumber] & {
+        splitId: BigNumber;
+        token: string;
+        to: string;
+        totalAmount: BigNumber;
+      }
+    >;
+
+    totalSplits(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
+
+  createSplit(
+    token: string,
+    to: string,
+    userAmount: BigNumberish,
+    splitRecipients: SmartAccount.SplitRecipientStruct[],
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   eip712Domain(
     overrides?: CallOverrides
@@ -193,11 +474,82 @@ export interface SmartAccount extends BaseContract {
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
+  fullfillSplit(
+    splitRequestIndex: BigNumberish,
+    recepientIndex: BigNumberish,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  getAllSplitsCreated(
+    overrides?: CallOverrides
+  ): Promise<SmartAccount.SplitStructOutput[]>;
+
+  getSplit(
+    splitId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<SmartAccount.SplitStructOutput>;
+
+  getSplitRequest(
+    splitRequestIndex: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<SmartAccount.SplitRequestStructOutput>;
+
+  getSplitRequests(
+    overrides?: CallOverrides
+  ): Promise<SmartAccount.SplitRequestStructOutput[]>;
+
   nonceUsed(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+  notifyFullfillSplit(
+    splitId: BigNumberish,
+    recepientIndex: BigNumberish,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  requestSplit(
+    splitId: BigNumberish,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  splitRequests(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, string, BigNumber] & {
+      splitId: BigNumber;
+      requester: string;
+      amount: BigNumber;
+    }
+  >;
+
+  splits(
+    splitId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, string, string, BigNumber] & {
+      splitId: BigNumber;
+      token: string;
+      to: string;
+      totalAmount: BigNumber;
+    }
+  >;
+
+  totalSplits(overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
+    createSplit(
+      token: string,
+      to: string,
+      userAmount: BigNumberish,
+      splitRecipients: SmartAccount.SplitRecipientStruct[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     eip712Domain(
       overrides?: CallOverrides
     ): Promise<
@@ -218,14 +570,103 @@ export interface SmartAccount extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    fullfillSplit(
+      splitRequestIndex: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    getAllSplitsCreated(
+      overrides?: CallOverrides
+    ): Promise<SmartAccount.SplitStructOutput[]>;
+
+    getSplit(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<SmartAccount.SplitStructOutput>;
+
+    getSplitRequest(
+      splitRequestIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<SmartAccount.SplitRequestStructOutput>;
+
+    getSplitRequests(
+      overrides?: CallOverrides
+    ): Promise<SmartAccount.SplitRequestStructOutput[]>;
+
     nonceUsed(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
+    notifyFullfillSplit(
+      splitId: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     owner(overrides?: CallOverrides): Promise<string>;
+
+    requestSplit(
+      splitId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    splitRequests(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string, BigNumber] & {
+        splitId: BigNumber;
+        requester: string;
+        amount: BigNumber;
+      }
+    >;
+
+    splits(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string, string, BigNumber] & {
+        splitId: BigNumber;
+        token: string;
+        to: string;
+        totalAmount: BigNumber;
+      }
+    >;
+
+    totalSplits(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
     "EIP712DomainChanged()"(): EIP712DomainChangedEventFilter;
     EIP712DomainChanged(): EIP712DomainChangedEventFilter;
+
+    "SplitCreated(uint256,address,address,uint256,(address,uint256)[])"(
+      splitId?: null,
+      token?: null,
+      to?: null,
+      totalAmount?: null,
+      splitRecipients?: null
+    ): SplitCreatedEventFilter;
+    SplitCreated(
+      splitId?: null,
+      token?: null,
+      to?: null,
+      totalAmount?: null,
+      splitRecipients?: null
+    ): SplitCreatedEventFilter;
+
+    "SplitFullfilled(uint256,address,uint256)"(
+      splitId?: null,
+      recipient?: null,
+      amount?: null
+    ): SplitFullfilledEventFilter;
+    SplitFullfilled(
+      splitId?: null,
+      recipient?: null,
+      amount?: null
+    ): SplitFullfilledEventFilter;
 
     "TransactionExecuted(uint256,address,uint256,bytes,uint256,bytes)"(
       nonce?: null,
@@ -246,6 +687,14 @@ export interface SmartAccount extends BaseContract {
   };
 
   estimateGas: {
+    createSplit(
+      token: string,
+      to: string,
+      userAmount: BigNumberish,
+      splitRecipients: SmartAccount.SplitRecipientStruct[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
     eip712Domain(overrides?: CallOverrides): Promise<BigNumber>;
 
     execute(
@@ -254,15 +703,69 @@ export interface SmartAccount extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
+    fullfillSplit(
+      splitRequestIndex: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    getAllSplitsCreated(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getSplit(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getSplitRequest(
+      splitRequestIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getSplitRequests(overrides?: CallOverrides): Promise<BigNumber>;
+
     nonceUsed(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    notifyFullfillSplit(
+      splitId: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    requestSplit(
+      splitId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    splitRequests(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    splits(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    totalSplits(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    createSplit(
+      token: string,
+      to: string,
+      userAmount: BigNumberish,
+      splitRecipients: SmartAccount.SplitRecipientStruct[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
     eip712Domain(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     execute(
@@ -271,11 +774,59 @@ export interface SmartAccount extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
+    fullfillSplit(
+      splitRequestIndex: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    getAllSplitsCreated(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSplit(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSplitRequest(
+      splitRequestIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSplitRequests(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     nonceUsed(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    notifyFullfillSplit(
+      splitId: BigNumberish,
+      recepientIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    requestSplit(
+      splitId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    splitRequests(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    splits(
+      splitId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    totalSplits(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

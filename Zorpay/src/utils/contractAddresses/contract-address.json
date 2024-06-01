@@ -1,11 +1,14 @@
 {
   "5611": {
-    "SmartAccountFactory": "0xb20cdcaf8636efee0730ac5fe37842afa13909e6"
+    "SmartAccountFactory": "0x6a795bf108127f4b90b110db688b538c34008c05",
+    "MyUSD": "0x5d81cb67418762a86e342f322ecf22a677acda27"
   },
   "59141": {
-    "SmartAccountFactory": "0xca34ff4068f042203087d475805c4dd8347ce958"
+    "SmartAccountFactory": "0x11da0f57086a19977e46b548b64166411d839a30",
+    "MyUSD": "0xdf78d5a57dcff31ca18978b56760867010aebc2e"
   },
   "245022926": {
-    "SmartAccountFactory": "0xdf78d5a57dcff31ca18978b56760867010aebc2e"
+    "SmartAccountFactory": "0x76cfde04f691b93c9993be24d5fe7667e7a8782c",
+    "MyUSD": "0x489d47e592639ba11107e84dd6cca08f0892e27d"
   }
 }

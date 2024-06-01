@@ -1,0 +1,22 @@
+{
+  "name": "smart_contracts",
+  "version": "1.0.0",
+  "description": "**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**",
+  "main": "/dist/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.13.0",
+    "ethers": "5.7.2",
+    "ts-node": "^10.9.2"
+  },
+  "scripts": {
+    "generateSignature": "node ./dist/GenerateSignature.js",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC"
+}

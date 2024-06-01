@@ -3,20 +3,39 @@ import {Text, View, TouchableOpacity, TextInput, Modal} from 'react-native';
 import {styles} from './styles';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {COLORS} from '../../lib/constants';
+import {isAddress} from 'viem';
+import {useAppDispatch} from '../../hooks/storeHooks';
+import {ToastAndroid} from 'react-native';
+import {setTransactionDetails} from '../../stores/transaction.reducer';
 
-const Send = () => {
+const Send = ({navigation}) => {
   const [screen, setScreen] = useState('walletAddress');
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
 
+  const dispatch = useAppDispatch();
+
   const handleNext = () => {
     if (screen === 'walletAddress' && address) {
+      if (!isAddress(address)) {
+        ToastAndroid.show('Invalid address', ToastAndroid.SHORT);
+        return;
+      }
       setScreen('amount');
     } else if (screen === 'amount' && amount) {
       // Handle the final submission
       console.log('Send to:', address);
       console.log('Amount:', amount);
+      dispatch(
+        setTransactionDetails({
+          to: '0xbdfsa',
+          value: '0',
+          data: '0x',
+          message: 'Send to address',
+        }),
+      );
+      navigation.navigate('TransactionConfirm');
     }
   };
 
@@ -29,7 +48,6 @@ const Send = () => {
   };
 
   const onSuccess = e => {
-    console.log(e);
     setAddress(e.data);
     setIsScannerOpen(false);
   };
@@ -57,26 +75,20 @@ const Send = () => {
           <Modal
             visible={isScannerOpen}
             animationType="slide"
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              height: 800,
-            }}>
+            style={styles.qrModal}>
             <QRCodeScanner
               onRead={onSuccess}
               vibrate
               reactivate
               reactivateTimeout={1000}
               showMarker
-              containerStyle={{
-                height: 400,
-              }}
               topContent={
                 <Text style={styles.centerText}>Scan the QR code</Text>
               }
               bottomContent={
-                <TouchableOpacity
-                  style={[styles.scanButton, {marginBottom: 100}]}
-                  onPress={() => setIsScannerOpen(false)}></TouchableOpacity>
+                <Text style={{color: 'white', marginBottom: 100, zIndex: 1000}}>
+                  Scan the QR code to get the wallet address
+                </Text>
               }
             />
           </Modal>
@@ -86,7 +98,6 @@ const Send = () => {
           <Text style={styles.label}>Sending to:</Text>
           <Text style={styles.address}>{address}</Text>
           <Text style={styles.amountText}>${amount || '0.00'}</Text>
-          <Text style={styles.amountSubText}>0.00000 ETH</Text>
           <Text style={styles.amountSubText}>$19.94 available</Text>
           <View style={styles.keyboardContainer}>
             {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0'].map(
@@ -104,7 +115,7 @@ const Send = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>Next</Text>
+            <Text style={styles.nextButtonText}>Send</Text>
           </TouchableOpacity>
         </View>
       )}

@@ -7,10 +7,11 @@ const TYPES_DIR = "../Zorpay/src/utils/types";
 async function main() {
   const cwd = process.cwd();
   const files = (await glob("./src/**/*.sol")).map((str: string) =>
-    path.basename(str)
+    path.basename(str),
   );
   const allFiles = files.map(
-    (file: string) => "./out/" + file + "/" + file.replace(".sol", "") + ".json"
+    (file: string) =>
+      "./out/" + file + "/" + file.replace(".sol", "") + ".json",
   );
 
   const result = await runTypeChain({

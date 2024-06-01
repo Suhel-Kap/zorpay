@@ -21,7 +21,7 @@ async function main() {
     for (const chainId of runFiles) {
       const runJsonFile = fs.readFileSync(
         "./broadcast/" + deployScript + "/" + chainId + "/run-latest.json",
-        "utf-8"
+        "utf-8",
       );
       const runFile = JSON.parse(runJsonFile);
       const currentAddresses: Record<string, string> = {};

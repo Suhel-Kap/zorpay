@@ -11,6 +11,7 @@ import {
   REGISTER,
 } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import transactionReducer from './transaction.reducer';
 
 const persistConfig = {
   key: 'root',
@@ -19,6 +20,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
+  transaction: transactionReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

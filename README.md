@@ -31,6 +31,7 @@ Welcome to **Zorpay**, a self-custodial, simplified stablecoin wallet designed t
 
 - [Inspiration](#inspiration)
 - [What It Does](#what-it-does)
+- [Walkthrough](#walkthrough)
 - [How We Built It](#how-we-built-it)
 - [Challenges We Ran Into](#challenges-we-ran-into)
 - [Accomplishments That We're Proud Of](#accomplishments-that-were-proud-of)
@@ -51,6 +52,35 @@ Zorpay offers a comprehensive solution for managing stablecoin transactions. Key
 - **Biometric Security**: Enhance security with biometric authentication.
 - **Social Login**: Quick and easy login using Google or wallets like MetaMask.
 - **Decentralization**: Fully decentralized using smart contracts deployed on opBNB, Linea Sepolia, and Neon EVM Devnet.
+
+## Walkthrough
+
+- When you first open Zorpay:
+  ![Zorpay](README/Screenshots/Zorpay.png)
+- It will ask you to login with Google or Wallet:
+  ![Zorpay](README/Screenshots/Login%20Screen.png)
+- After logging in, you will be taken to the home screen where you can see your balance and recent activities:
+  ![Zorpay](README/Screenshots/Home%20Page%200.png)
+  ![Zorpay](README/Screenshots/Home%20Page%201.png)
+- You can also access the menu to change network, get USD from faucet, and log out:
+  ![Zorpay](README/Screenshots/Side%20Bar.png)
+- You can receive stablecoins by sharing QR code or your smart account address:
+  ![Zorpay](README/Screenshots/Receive%20QR%20Code.png)
+- You can send stablecoins by scanning QR code or entering the recipient's address:
+  ![Zorpay](README/Screenshots/Send%20Wallet%20Address.png)
+  ![Zorpay](README/Screenshots/QR%20Code%20Scan.png)
+  ![Zorpay](README/Screenshots/Send%20Amount%20Input.png)
+  ![Zorpay](README/Screenshots/Send%20Transaction%20Details.png)
+- You can split bills among friends by entering the total amount and the number of people:
+  ![Zorpay](README/Screenshots/Split%20Wallet%20Address.png)
+  ![Zorpay](README/Screenshots/Split%20Contributors%20Addresses%200.png)
+  ![Zorpay](README/Screenshots/Split%20Contributors%20Addresses%201.png)
+  ![Zorpay](README/Screenshots/Split%20Transaction%20Details.png)
+- You can view all the split requests and pay them:
+  ![Zorpay](README/Screenshots/Split%20Requests.png)
+- This is how transaction progress looks like:
+  ![Zorpay](README/Screenshots/Transaction%20Processing.png)
+  ![Zorpay](README/Screenshots/Transaction%20Confirmed.png)
 
 ## How We Built It
 

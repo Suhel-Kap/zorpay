@@ -1,17 +1,19 @@
 import React from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
 import {styles} from './styles';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useAccount, useDisconnect} from 'wagmi';
 import {useAppDispatch} from '../../hooks/storeHooks';
 import {setIsMagic, setLoggedIn} from '../../stores/user.reducer';
 import {COLORS, magic} from '../../lib/constants';
 import {ToastAndroid} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const Header = ({name}: {name: string}) => {
   const {disconnectAsync} = useDisconnect();
   const {isConnected} = useAccount();
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const handleDisconnect = async () => {
     if (isConnected) {
@@ -32,8 +34,8 @@ const Header = ({name}: {name: string}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{name !== 'Home' ? name : 'Zorpay'}</Text>
-      <TouchableOpacity onPress={handleDisconnect}>
-        <AntDesign size={20} name="logout" color={COLORS.SECONDARY_TEXT} />
+      <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+        <FontAwesome size={20} name="bars" color={COLORS.SECONDARY_TEXT} />
       </TouchableOpacity>
     </View>
   );

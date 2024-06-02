@@ -20,11 +20,13 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.PRIMARY_TEXT,
     marginBottom: 8,
+    fontWeight: 'bold',
   },
   drawerItem: {
     fontSize: 16,
     color: COLORS.SECONDARY_TEXT,
     paddingVertical: 8,
+    fontWeight: 'semibold',
   },
   logoutButton: {
     marginTop: 16,
@@ -33,7 +35,8 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
   },
   logoutButtonText: {
-    color: COLORS.SECONDARY_TEXT,
+    color: 'white',
+    fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 16,
   },

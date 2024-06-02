@@ -6,14 +6,23 @@ import {
 } from '@react-navigation/drawer';
 import {useDispatch} from 'react-redux';
 import {useAccount, useDisconnect} from 'wagmi';
-import {setIsMagic, setLoggedIn} from '../../stores/user.reducer';
+import {
+  getChainId,
+  setChainId,
+  setIsMagic,
+  setLoggedIn,
+} from '../../stores/user.reducer';
 import {styles} from './styles';
 import {COLORS, magic} from '../../lib/constants';
+import {useAppSelector} from '../../hooks/storeHooks';
 
 const CustomDrawerContent = props => {
   const {disconnectAsync} = useDisconnect();
   const {isConnected} = useAccount();
   const dispatch = useDispatch();
+
+  const chainId = useAppSelector(getChainId);
+  console.log('chainId', chainId);
 
   const handleDisconnect = async () => {
     if (isConnected) {
@@ -32,23 +41,55 @@ const CustomDrawerContent = props => {
   };
 
   const handleChangeNetwork = network => {
-    // Add logic to handle network change
+    dispatch(setChainId(network));
     ToastAndroid.show(`Network changed to ${network}`, ToastAndroid.SHORT);
   };
 
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
       <View style={styles.drawerContent}>
         <Text style={styles.drawerTitle}>Change Network</Text>
-        <TouchableOpacity onPress={() => handleChangeNetwork('Network1')}>
-          <Text style={styles.drawerItem}>Network 1</Text>
+        <TouchableOpacity onPress={() => handleChangeNetwork('5611')}>
+          <Text
+            style={[
+              styles.drawerItem,
+              {
+                color:
+                  chainId === '5611'
+                    ? COLORS.PRIMARY_TEXT
+                    : COLORS.SECONDARY_TEXT,
+              },
+            ]}>
+            opBNB
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleChangeNetwork('Network2')}>
-          <Text style={styles.drawerItem}>Network 2</Text>
+        <TouchableOpacity onPress={() => handleChangeNetwork('59141')}>
+          <Text
+            style={[
+              styles.drawerItem,
+              {
+                color:
+                  chainId === '59141'
+                    ? COLORS.PRIMARY_TEXT
+                    : COLORS.SECONDARY_TEXT,
+              },
+            ]}>
+            Linea Sepolia
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleChangeNetwork('Network3')}>
-          <Text style={styles.drawerItem}>Network 3</Text>
+        <TouchableOpacity onPress={() => handleChangeNetwork('245022926')}>
+          <Text
+            style={[
+              styles.drawerItem,
+              {
+                color:
+                  chainId === '245022926'
+                    ? COLORS.PRIMARY_TEXT
+                    : COLORS.SECONDARY_TEXT,
+              },
+            ]}>
+            Neon Devnet
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.logoutButton}

@@ -13,7 +13,7 @@ import {
 import {generateRandomNonce, generateSignature} from '../../utils/utils';
 import {getChainId, getSmartAccountAddress} from '../../stores/user.reducer';
 import {SupportedChainIds} from '../../utils/read.contract';
-import {magic} from '../../lib/constants';
+import {COLORS, magic} from '../../lib/constants';
 import {ethers} from 'ethers';
 import {executeTransaction} from '../../utils/write.contract';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -96,7 +96,7 @@ const TransactionConfirm = ({navigation}) => {
         {isProcessing ? (
           <>
             <Text style={styles.processingText}>Transaction Processing...</Text>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color={COLORS.PRIMARY_TEXT} />
           </>
         ) : transactionHash ? (
           <>

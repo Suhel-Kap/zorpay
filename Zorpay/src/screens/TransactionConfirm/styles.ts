@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
   },
   confirmText: {
     fontSize: 18,
-    color: COLORS.SUCCESS,
+    color: COLORS.PRIMARY_TEXT,
     marginBottom: 15,
     fontWeight: 'bold',
   },

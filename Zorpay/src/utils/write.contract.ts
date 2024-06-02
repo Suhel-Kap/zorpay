@@ -75,4 +75,30 @@ const executeTransaction = async (
   }
 };
 
-export {createSmartAccount, executeTransaction};
+const getUsdcFromFaucet = async (eoa: string, chainId: SupportedChainIds) => {
+  const txData = MyUSD__factory.createInterface().encodeFunctionData('mint', [
+    eoa,
+    ethers.utils.parseEther('1000'),
+  ]);
+
+  const res = await fetch(`${BACKEND_URL}/ExecuteAny`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      rpcURL: NETWORKS[chainId].rpcUrl,
+      transactionData: txData,
+      to: CONTRACT_ADDRESSES[chainId].MyUSD,
+    }),
+  });
+
+  const {txReceipt, txResponse} = (await res.json()) as {
+    txResponse: ethers.providers.TransactionResponse;
+    txReceipt: ethers.providers.TransactionReceipt;
+  };
+
+  return txReceipt;
+};
+
+export {createSmartAccount, executeTransaction, getUsdcFromFaucet};

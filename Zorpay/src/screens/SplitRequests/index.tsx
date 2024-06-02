@@ -4,16 +4,21 @@ import {styles} from './styles';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {getChainId, getSmartAccountAddress} from '../../stores/user.reducer';
 import {ethers} from 'ethers';
-import {SupportedChainIds, getSplitRequests} from '../../utils/read.contract';
+import {
+  SupportedChainIds,
+  getSplitByID,
+  getSplitRequests,
+} from '../../utils/read.contract';
 import {setTransactionDetails} from '../../stores/transaction.reducer';
 import CONTRACT_ADDRESSES from '../../utils/contractAddresses/contract-address.json';
+import {SmartAccount__factory} from '../../utils/types';
 
 const SplitRequests = ({navigation}) => {
   const [splitRequests, setSplitRequests] = useState<
     Array<{
       requestId: string;
       amount: string;
-      recipient: string;
+      requester: string;
     }>
   >([]);
 
@@ -30,11 +35,11 @@ const SplitRequests = ({navigation}) => {
           setSplitRequests(prevState => [
             ...prevState,
             {
-              requestId: ethers.BigNumber.from(request[0]).toString(),
+              requestId: ethers.BigNumber.from(request.splitId).toString(),
               amount: ethers.utils.formatEther(
-                ethers.BigNumber.from(request[2]).toString(),
+                ethers.BigNumber.from(request.amount).toString(),
               ),
-              recipient: request[1],
+              requester: request.requester,
             },
           ]);
         });
@@ -42,23 +47,37 @@ const SplitRequests = ({navigation}) => {
     }
   }, [smartAccountAddress, chainId]);
 
-  const handlePay = (requestId: string) => {
+  const handlePay = async (requestId: string, splitRequestIndex: number) => {
     console.log(`Pay button pressed for request ${requestId}`);
     const splitRequest = splitRequests.find(
       request => request.requestId === requestId,
     );
+    const split = await getSplitByID(
+      smartAccountAddress,
+      parseInt(requestId),
+      chainId,
+    );
+    let recipientIndex = split.splitRecipientsDetails.findIndex(
+      request => request.recipient.recipient === smartAccountAddress,
+    );
     dispatch(
       setTransactionDetails({
-        to: CONTRACT_ADDRESSES[chainId].MyUSD,
+        to: smartAccountAddress,
         value: '0',
-        data: MyUSD__factory.createInterface().encodeFunctionData('transfer', [
-          address,
-          ethers.utils.parseUnits(amount, 18),
-        ]),
-        message: `Send ${splitRequest?.amount} USD to ${splitRequest?.recipient}`,
+        data: SmartAccount__factory.createInterface().encodeFunctionData(
+          'fullfillSplit',
+          [
+            recipientIndex,
+            splitRequestIndex,
+            ethers.utils.parseEther(splitRequest?.amount!),
+          ],
+        ),
+        message: `Fullfilling split request by ${splitRequest?.requester} for ${splitRequest?.amount} USD`,
         extraData: {
-          type: 'Split Payment',
-          amount: splitRequest?.amount,
+          type: 'Split Payment Fullfilled',
+          amount: splitRequest?.amount!,
+          approve: true,
+          requester: splitRequest?.requester,
         },
       }),
     );
@@ -67,16 +86,16 @@ const SplitRequests = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {splitRequests.map(request => (
+      {splitRequests.map((request, index) => (
         <View style={styles.requestContainer} key={request.requestId}>
           <Text style={styles.requestText}>
             Request Id: {request.requestId}
           </Text>
           <Text style={styles.requestText}>Amount: ${request.amount}</Text>
-          <Text style={styles.requestText}>Recipient: {request.recipient}</Text>
+          <Text style={styles.requestText}>Requester: {request.requester}</Text>
           <TouchableOpacity
             style={styles.payButton}
-            onPress={() => handlePay(request.requestId)}>
+            onPress={() => handlePay(request.requestId, index)}>
             <Text style={styles.payButtonText}>Pay</Text>
           </TouchableOpacity>
         </View>

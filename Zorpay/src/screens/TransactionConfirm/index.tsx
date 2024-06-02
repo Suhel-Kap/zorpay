@@ -13,10 +13,12 @@ import {
 import {generateRandomNonce, generateSignature} from '../../utils/utils';
 import {getChainId, getSmartAccountAddress} from '../../stores/user.reducer';
 import {SupportedChainIds} from '../../utils/read.contract';
-import {COLORS, magic} from '../../lib/constants';
+import {COLORS, NETWORKS, magic} from '../../lib/constants';
 import {ethers} from 'ethers';
 import {executeTransaction} from '../../utils/write.contract';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CONTRACT_ADDRESSES from '../../utils/contractAddresses/contract-address.json';
+import {MyUSD__factory} from '../../utils/types';
 
 const TransactionConfirm = ({navigation}) => {
   const dispatch = useAppDispatch();
@@ -41,6 +43,34 @@ const TransactionConfirm = ({navigation}) => {
           // @ts-ignore
           magic?.rpcProvider,
         ).getSigner();
+
+        if (extraData.approve) {
+          const {signature, transaction} = await generateSignature(
+            generateRandomNonce(),
+            CONTRACT_ADDRESSES[chainId].MyUSD,
+            0,
+            MyUSD__factory.createInterface().encodeFunctionData('approve', [
+              extraData.requester,
+              ethers.utils.parseEther(extraData.amount),
+            ]),
+            Date.now() + 1000 * 60 * 5, // 5 minutes
+            chainId,
+            smartAccountAddress,
+            signer,
+          );
+          console.log('executing transaction', transaction, signature);
+          const {success, txReceipt} = await executeTransaction(
+            transaction,
+            signature,
+            chainId,
+            smartAccountAddress,
+          );
+          if (!success) {
+            // handle failure here
+            console.log('Transaction failed');
+            return;
+          }
+        }
 
         const {signature, transaction} = await generateSignature(
           generateRandomNonce(),

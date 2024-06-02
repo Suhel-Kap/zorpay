@@ -41,4 +41,22 @@ const getSplitRequests = async (eoa: string, chainId: SupportedChainIds) => {
   return splitRequests;
 };
 
-export {checkIfAccountExists, getSmartAccountAddress, getSplitRequests};
+const getSplitByID = async (
+  smartAccountAddress: string,
+  splitID: number,
+  chainId: SupportedChainIds,
+) => {
+  const smartAccountFactory = SmartAccount__factory.connect(
+    smartAccountAddress,
+    new ethers.providers.JsonRpcProvider(NETWORKS[chainId].rpcUrl),
+  );
+  const split = await smartAccountFactory.getSplit(splitID);
+  return split;
+};
+
+export {
+  checkIfAccountExists,
+  getSmartAccountAddress,
+  getSplitRequests,
+  getSplitByID,
+};

@@ -4,7 +4,7 @@ Welcome to **Zorpay**, a self-custodial, simplified stablecoin wallet designed t
 
 ## Android APK
 
-[Download apk file for Android]()
+[Download apk file for Android](https://drive.google.com/drive/folders/1uM-qqES5eNoHF5Ja1ketaYZe-HBQw-Um?usp=sharing)
 
 ## Smart Contracts ( opBNB Testnet )
 

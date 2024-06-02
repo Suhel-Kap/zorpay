@@ -1,12 +1,14 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {styles} from './styles';
-import {useAppSelector} from '../../hooks/storeHooks';
+import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {getChainId, getSmartAccountAddress} from '../../stores/user.reducer';
 import {ethers} from 'ethers';
-import {getSplitRequests} from '../../utils/read.contract';
+import {SupportedChainIds, getSplitRequests} from '../../utils/read.contract';
+import {setTransactionDetails} from '../../stores/transaction.reducer';
+import CONTRACT_ADDRESSES from '../../utils/contractAddresses/contract-address.json';
 
-const SplitRequests = () => {
+const SplitRequests = ({navigation}) => {
   const [splitRequests, setSplitRequests] = useState<
     Array<{
       requestId: string;
@@ -16,7 +18,8 @@ const SplitRequests = () => {
   >([]);
 
   const smartAccountAddress = useAppSelector(getSmartAccountAddress);
-  const chainId = useAppSelector(getChainId);
+  const chainId = useAppSelector(getChainId) as SupportedChainIds;
+  const dispatch = useAppDispatch();
   const didMountRef = useRef(false);
 
   useEffect(() => {
@@ -41,7 +44,25 @@ const SplitRequests = () => {
 
   const handlePay = (requestId: string) => {
     console.log(`Pay button pressed for request ${requestId}`);
-    // Add logic to handle payment
+    const splitRequest = splitRequests.find(
+      request => request.requestId === requestId,
+    );
+    dispatch(
+      setTransactionDetails({
+        to: CONTRACT_ADDRESSES[chainId].MyUSD,
+        value: '0',
+        data: MyUSD__factory.createInterface().encodeFunctionData('transfer', [
+          address,
+          ethers.utils.parseUnits(amount, 18),
+        ]),
+        message: `Send ${splitRequest?.amount} USD to ${splitRequest?.recipient}`,
+        extraData: {
+          type: 'Split Payment',
+          amount: splitRequest?.amount,
+        },
+      }),
+    );
+    navigation.navigate('TransactionConfirm');
   };
 
   return (

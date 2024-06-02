@@ -1,9 +1,6 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, ToastAndroid} from 'react-native';
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer';
+import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {useDispatch} from 'react-redux';
 import {useAccount, useDisconnect} from 'wagmi';
 import {

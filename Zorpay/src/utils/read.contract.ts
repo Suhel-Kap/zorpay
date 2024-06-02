@@ -32,4 +32,13 @@ const checkIfAccountExists = async (
   return smartAccountAddress !== ethers.constants.AddressZero;
 };
 
-export {checkIfAccountExists, getSmartAccountAddress};
+const getSplitRequests = async (eoa: string, chainId: SupportedChainIds) => {
+  const smartAccountFactory = SmartAccount__factory.connect(
+    eoa,
+    new ethers.providers.JsonRpcProvider(NETWORKS[chainId].rpcUrl),
+  );
+  const splitRequests = await smartAccountFactory.getSplitRequests();
+  return splitRequests;
+};
+
+export {checkIfAccountExists, getSmartAccountAddress, getSplitRequests};

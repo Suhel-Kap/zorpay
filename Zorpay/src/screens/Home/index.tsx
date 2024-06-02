@@ -155,6 +155,15 @@ const Home = ({navigation}) => {
             <Text style={styles.itemText}>Send</Text>
           </View>
         </View>
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SplitRequests')}
+            style={styles.splitCta}>
+            <Text style={[styles.drawerTitle, {marginBottom: 0}]}>
+              Split Requests
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <Animated.View
         {...panResponder.panHandlers}
@@ -186,6 +195,11 @@ const Home = ({navigation}) => {
               <Text style={styles.transactionItemAmount}>${item.amount}</Text>
             </View>
           ))}
+          {transactionHistory.length === 0 && (
+            <>
+              <Text style={styles.noTransactionText}>No transactions yet</Text>
+            </>
+          )}
         </View>
       </Animated.View>
     </SafeAreaView>

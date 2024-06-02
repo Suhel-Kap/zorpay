@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     height,
+    zIndex: 1,
   },
   mainContainer: {
     display: 'flex',
@@ -42,6 +43,12 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
+  splitCta: {
+    marginTop: 20,
+    backgroundColor: COLORS.SECONDARY,
+    padding: 10,
+    borderRadius: 10,
+  },
   floatingDrawer: {
     position: 'absolute',
     bottom: 0,
@@ -58,6 +65,7 @@ export const styles = StyleSheet.create({
     elevation: 10,
     paddingHorizontal: 20,
     paddingTop: 10,
+    zIndex: 100,
   },
   drawerHandle: {
     width: 40,
@@ -105,5 +113,34 @@ export const styles = StyleSheet.create({
   transactionItemIcon: {
     width: 30,
     height: 30,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.LIGHT_GRAY,
+  },
+  tab: {
+    padding: 10,
+    zIndex: 200,
+  },
+  activeTab: {
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.PRIMARY,
+  },
+  tabText: {
+    fontSize: 16,
+    color: COLORS.PRIMARY_TEXT,
+  },
+  activeTabText: {
+    color: COLORS.PRIMARY,
+  },
+  noTransactionText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: COLORS.SECONDARY_TEXT,
+    marginTop: 20,
   },
 });

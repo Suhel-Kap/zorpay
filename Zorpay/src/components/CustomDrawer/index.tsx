@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux';
 import {useAccount, useDisconnect} from 'wagmi';
 import {
   getChainId,
+  getSmartAccountAddress,
   setChainId,
   setIsMagic,
   setLoggedIn,
@@ -12,14 +13,18 @@ import {
 import {styles} from './styles';
 import {COLORS, magic} from '../../lib/constants';
 import {useAppSelector} from '../../hooks/storeHooks';
+import {getUsdcFromFaucet} from '../../utils/write.contract';
+import {ActivityIndicator} from 'react-native';
 
 const CustomDrawerContent = props => {
+  const [fetchingUsdc, setFetchingUsdc] = React.useState(false);
+
   const {disconnectAsync} = useDisconnect();
   const {isConnected} = useAccount();
   const dispatch = useDispatch();
 
   const chainId = useAppSelector(getChainId);
-  console.log('chainId', chainId);
+  const smartAccountAddress = useAppSelector(getSmartAccountAddress);
 
   const handleDisconnect = async () => {
     if (isConnected) {
@@ -35,6 +40,22 @@ const CustomDrawerContent = props => {
       }
     }
     dispatch(setIsMagic(false));
+  };
+
+  const handleReceiveUsdc = async () => {
+    setFetchingUsdc(true);
+    try {
+      const res = await getUsdcFromFaucet(smartAccountAddress, chainId);
+      if (res) {
+        ToastAndroid.show('USDC received', ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show('Failed to receive USDC', ToastAndroid.SHORT);
+      }
+    } catch (e) {
+      console.log(e);
+      ToastAndroid.show('Failed to receive USDC', ToastAndroid.SHORT);
+    }
+    setFetchingUsdc(false);
   };
 
   const handleChangeNetwork = network => {
@@ -87,6 +108,16 @@ const CustomDrawerContent = props => {
             ]}>
             Neon Devnet
           </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          disabled={fetchingUsdc}
+          style={styles.logoutButton}
+          onPress={handleReceiveUsdc}>
+          {fetchingUsdc ? (
+            <ActivityIndicator color={'white'} size="small" />
+          ) : (
+            <Text style={styles.logoutButtonText}>Get USDC Faucet</Text>
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.logoutButton}
